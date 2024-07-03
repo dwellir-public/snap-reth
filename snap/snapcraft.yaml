@@ -1,0 +1,91 @@
+name: reth
+title: reth
+base: core22
+adopt-info: reth
+summary: Rust implemetation of ehtereum client
+license: MIT
+contact: info@dwellir.com
+issues: https://github.com/dwellir-public/snap-polkadot/issues
+source-code: https://github.com/dwellir-public/snap-polkadot/
+website: https://www.dwellir.com
+grade: stable
+confinement: strict
+
+architectures:
+  - amd64
+
+description: |
+  https://github.com/paradigmxyz/reth
+
+  Build similar to: https://github.com/onbjerg/aur-reth/
+  
+  Configuration: https://reth.rs/run/config.html
+  
+  Archive node: "reth node" (default)
+
+  Full node: "reth node --full"
+
+  snap set reth service-args="node --full" # turn the snap into a fullnode
+
+parts:
+  reth:
+    plugin: rust
+    source: https://github.com/paradigmxyz/reth.git
+    source-tag: v1.0.0
+    source-depth: 1
+    build-packages:
+      - build-essential
+      - git 
+      - libclang-dev 
+      - pkg-config
+      - protobuf-compiler
+    # Make the commit hash available for snap info
+    override-pull: |
+      craftctl default
+      craftctl set version="1.0.0-$(git rev-parse --short HEAD)"
+      rustup default stable
+      rustup update
+     
+    override-build: |
+      # craftctl default 
+      # This will place the reth binary under target/maxperf/reth
+      export CARGO_TARGET_DIR=target
+      cargo build --bin reth --profile maxperf --features jemalloc
+      mkdir -p "${CRAFT_PART_INSTALL}"/bin
+      cp target/maxperf/reth ${CRAFT_PART_INSTALL}/bin/
+    
+    stage:
+      - bin/reth
+
+    prime:
+      - bin/reth
+
+  wrappers:
+    plugin: dump
+    source-type: local
+    source: .
+    stage:
+      - wrappers/
+  
+  utils:
+      plugin: dump
+      source-type: local
+      source: .
+      stage:
+        - utils/
+
+apps:
+  reth-daemon:
+    command: wrappers/start-reth.bash
+    daemon: simple
+    install-mode: disable
+    refresh-mode: endure
+    restart-condition: never
+    plugs:
+      - network
+      - network-bind
+    environment:
+      LC_ALL: C.UTF-8
+      LANG: C.UTF-8
+  reth:
+    command: bin/reth
