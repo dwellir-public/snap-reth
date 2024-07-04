@@ -1,6 +1,6 @@
 # reth snap
 
-The Rust ethereum exexution client.
+The Rust ethereum execution client.
 
 Use with some consensus client, such as lighthouse to participate in the ethereum network.
 
@@ -13,10 +13,10 @@ For more commands, see the reth node CLI reference.
 
 The snap uses (defaults)
 
-* debug log directory: /root/snap/reth/x1/.cache/reth/logs/mainnet
-* database path="/root/snap/reth/x1/.local/share/reth/mainnet/db"
-* Configuration loaded path="/root/snap/reth/x1/.local/share/reth/mainnet/reth.toml"
-* JWT auth secret file path="/root/snap/reth/x1/.local/share/reth/mainnet/jwt.hex"
+* debug log directory: /root/snap/reth/current/.cache/reth/logs/mainnet
+* database path="/root/snap/reth/current/.local/share/reth/mainnet/db"
+* Configuration loaded path="/root/snap/reth/current/.local/share/reth/mainnet/reth.toml"
+* JWT auth secret file path="/root/snap/reth/current/.local/share/reth/mainnet/jwt.hex"
 * RPC auth server started url=127.0.0.1:8551
 * RPC IPC server started path=/tmp/reth.ipc
 
