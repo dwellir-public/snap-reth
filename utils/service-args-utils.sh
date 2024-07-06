@@ -56,7 +56,7 @@ validate_service_args()
 {
     case "$1" in 
         *datadir*)
-            log_message="base-path is not allowed to pass as a service argument restoring to last used service-args. This path is alywas used instead ${DATADIR_PATH}."
+            log_message="datadir is not allowed to pass as a service argument restoring to last used service-args. This path is alywas used instead ${DATADIR_PATH}."
             log "$log_message"
             # Echo will be visible for a user if the configure hook fails when calling e.g. snap set SNAP_NAME service-args
             echo "$log_message"
