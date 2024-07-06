@@ -5,8 +5,8 @@ adopt-info: reth
 summary: Rust implemetation of ehtereum client
 license: MIT
 contact: info@dwellir.com
-issues: https://github.com/dwellir-public/snap-polkadot/issues
-source-code: https://github.com/dwellir-public/snap-polkadot/
+issues: https://github.com/dwellir-public/snap-reth/issues
+source-code: https://github.com/dwellir-public/snap-reth/
 website: https://www.dwellir.com
 grade: stable
 confinement: strict
