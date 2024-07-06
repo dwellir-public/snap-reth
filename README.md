@@ -13,19 +13,17 @@ For more commands, see the reth node CLI reference.
 
 The snap uses (defaults)
 
+* Config: /var/snap/reth/common/datadir/reth.toml
 * debug log directory: /root/snap/reth/current/.cache/reth/logs/mainnet
-* database path="/root/snap/reth/current/.local/share/reth/mainnet/db"
-* Configuration loaded path="/root/snap/reth/current/.local/share/reth/mainnet/reth.toml"
-* JWT auth secret file path="/root/snap/reth/current/.local/share/reth/mainnet/jwt.hex"
+* database path="/var/snap/reth/common/datadir/db"
+* Configuration loaded path="/var/snap/reth/common/datadir/reth.toml"
+* JWT auth secret file path="$SNAP_COMMON/jwt.hex"
 * RPC auth server started url=127.0.0.1:8551
 * RPC IPC server started path=/tmp/reth.ipc
 
-## Start reth-daemon (systemd)
-  sudo systemctl start snap.reth.reth-daemon.service
+## Start reth-daemon (snap)
+  sudo snap start reth
 
 ## Query database (using the reth cli)
   sudo reth db stats
 
-## TODO
-
-- [] Test with some 

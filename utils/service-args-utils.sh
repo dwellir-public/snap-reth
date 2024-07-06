@@ -2,12 +2,14 @@
 
 . "$SNAP/utils/utils.sh"
 
-BASE_PATH="$SNAP_COMMON/reth_base"
 SERVICE_ARGS_FILE="$SNAP_COMMON/service-arguments"
+
+# reth db storage location for the snap
+DATADIR_PATH="$SNAP_COMMON/datadir"
 
 write_service_args_file()
 {
-    service_args="$(get_service_args)"
+    service_args="$(get_service_args) --datadir=$DATADIR_PATH"
     log "Writing \"$service_args\" to $SERVICE_ARGS_FILE"
     echo "$service_args" > "$SERVICE_ARGS_FILE"
 }
@@ -20,10 +22,13 @@ set_service_args()
 
 get_service_args()
 {
+    # Start with default: fullnode on the mainnet
+    DEFAULT_ARGS='node --full --chain mainnet'
+
     service_args="$(snapctl get service-args)"
     if [ -z "$service_args" ]; then
         log "Setting default service args"
-        service_args="node"
+        service_args="$DEFAULT_ARGS"
         snapctl set service-args="$service_args"
     fi
     echo "$service_args"
@@ -50,8 +55,8 @@ service_args_has_changed()
 validate_service_args()
 {
     case "$1" in 
-        *base-path*)
-            log_message="base-path is not allowed to pass as a service argument restoring to last used service-args. This path is alywas used instead ${BASE_PATH}."
+        *datadir*)
+            log_message="base-path is not allowed to pass as a service argument restoring to last used service-args. This path is alywas used instead ${DATADIR_PATH}."
             log "$log_message"
             # Echo will be visible for a user if the configure hook fails when calling e.g. snap set SNAP_NAME service-args
             echo "$log_message"
