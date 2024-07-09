@@ -27,3 +27,12 @@ The snap uses (defaults)
 ## Query database (using the reth cli)
   sudo reth db stats
 
+## Pruning
+
+Stop the reth-daemon:
+
+  sudo snap stop reth
+
+Prune:
+  
+   sudo reth prune --chain mainnet
