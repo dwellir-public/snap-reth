@@ -21,6 +21,43 @@ The snap uses (defaults)
 * RPC auth server started url=127.0.0.1:8551
 * RPC IPC server started path=/tmp/reth.ipc
 
+## Running
+Assuming you run reth and lighthouse on the same localhost, this will get you running lighthouse with reth.
+
+Start by installing reth:
+
+  sudo snap install reth
+
+(Optionally) Set the snap to not restart after an automatic upgrade. You need to restart the reth-daemon yourself if set.
+
+  sudo snap set reth endure=true
+
+Install and use with "lighthouse" to participate in the ethereum network.
+
+  sudo snap install lighthouse
+
+Check and change the configuration of reth and/or lighthouse to your liking:
+
+  snap get lighthouse
+  snap get reth
+
+Start reth.
+
+  sudo snap start reth
+
+Copy the jwt.hex from reth -> lighthouse
+
+  sudo cp /var/snap/reth/common/datadir/jwt.hex /var/snap/lighthouse/common/
+
+Start lighthouse:
+
+  sudo snap start lighthouse
+
+Check logs:
+
+sudo snap logs reth -f
+sudo snap logs lighthouse -f
+
 ## Start reth-daemon (snap)
   sudo snap start reth
 
