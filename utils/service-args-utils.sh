@@ -49,19 +49,53 @@ service_args_has_changed()
 	[ "$(get_service_args)" != "$(get_previous_service_args)" ]
 }
 
-# Some arguments are forbidden to prevent failure:
-# base-path
+#
+# Decsription: Checks that the service-args handles --datadir OK.
 #
 validate_service_args()
 {
-    case "$1" in 
-        *datadir*)
-            log_message="datadir is not allowed to pass as a service argument restoring to last used service-args. This path is alywas used instead ${DATADIR_PATH}."
-            log "$log_message"
-            # Echo will be visible for a user if the configure hook fails when calling e.g. snap set SNAP_NAME service-args
-            echo "$log_message"
-            set_service_args "$(get_previous_service_args)"
-            exit 1
-            ;;
+
+    allowed_removable_media_paths="/mnt /media /run/media $SNAP_COMMON/datadir"
+
+    is_allowed_path() {
+        local path="$1"
+        for allowed_path in $allowed_removable_media_paths; do
+            # Check if path is directly within or under the allowed path
+            case "$path" in
+                "$allowed_path"/* | "$allowed_path")
+                    log "--datadir $path is allowed."
+                    return 0
+                    ;;
+            esac
+        done
+        log "--datadir $path NOT allowed."
+        # Echo also messages the user.
+        echo "--datadir $path is NOT allowed. Use any of these: $allowed_removable_media_paths"
+        return 1
+    }
+
+    log "Validating service-args argument: $@"
+    
+    # Split the service args up into separate components which sets $# to the number of tokens.
+    set -- $@
+
+    # Iterate over the arguments to find --datadir and its value
+    while [ "$#" -gt 0 ]; do
+        case "$1" in
+            --datadir)
+                shift
+                if [ -z "$1" ]; then
+                    log "No path specified for --datadir. No change was made to service-args."
+                    set_service_args "$(get_previous_service_args)"
+                    exit 1
+                fi
+                if ! is_allowed_path "$1"; then
+                    set_service_args "$(get_previous_service_args)"
+                    log  "datadir is not allowed to pass as a service argument. Only paths directly within or under /mnt, /media, or /run/media are allowed. No change was made to servie-args."
+                    exit 1
+                fi
+                ;;
         esac
+        shift
+    done
 }
