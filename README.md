@@ -11,6 +11,13 @@ respectively and using the --http.api and --ws.api flags to enable various JSON-
 
 The snap only accepts --datadir paths: "/mnt /media /run/media" or $SNAP_COMMON/datadir (default)
 
+## System considerations
+
+* Reth full node requires at least 1.2TB of disk space on mainnet (2024-jul-10)
+* Reth archive node requires at least 2.3TB of disk space on mainnet (2024-jul-10)
+
+See current stats at this public grafana dashboard: https://reth.paradigm.xyz/d/2k8BXz24x/reth?orgId=1&viewPanel=218&refresh=30s
+
 ## Running
 
 This example assumes reth and lighthouse are both on localhost.
