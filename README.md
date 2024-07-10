@@ -4,25 +4,19 @@ The Rust ethereum execution client.
 
 Use with some consensus client, such as lighthouse to participate in the ethereum network.
 
+It installs the "reth" command line tool and a reth-daemon service.
+
 The snap will not open HTTP/WS ports by default. You can change this by adding the --http, --ws flags, 
 respectively and using the --http.api and --ws.api flags to enable various JSON-RPC APIs. 
 
-For more commands, see the reth node CLI reference.
-
-## Initial information
-
-The snap uses (defaults)
-
-* Config: /var/snap/reth/common/datadir/reth.toml
-* debug log directory: /root/snap/reth/current/.cache/reth/logs/mainnet
-* database path="/var/snap/reth/common/datadir/db"
-* Configuration loaded path="/var/snap/reth/common/datadir/reth.toml"
-* JWT auth secret file path="$SNAP_COMMON/jwt.hex"
-* RPC auth server started url=127.0.0.1:8551
-* RPC IPC server started path=/tmp/reth.ipc
+The snap only accepts --datadir paths: "/mnt /media /run/media" or $SNAP_COMMON/datadir (default)
 
 ## Running
-Assuming you run reth and lighthouse on the same localhost, this will get you running lighthouse with reth.
+
+This example assumes reth and lighthouse are both on localhost.
+
+* Reth --datadir path: /mnt/reth/datadir
+
 
 Start by installing reth:
 
@@ -41,13 +35,18 @@ Check and change the configuration of reth and/or lighthouse to your liking:
     snap get lighthouse
     snap get reth
 
+Change the location of the --datadir and allow the snap to access some external filsystems/dirs (see: snap interface removable-media)
+
+    sudo snap connect reth:removable-media
+    sudo snap set reth service-args='node --full --datadir /mnt/reth/datadir'
+
 Start reth.
 
     sudo snap start reth
 
-Copy the jwt.hex from reth -> lighthouse
+Copy the jwt.hex from where you set the reth --datadir -> lighthouse
 
-    sudo cp /var/snap/reth/common/datadir/jwt.hex /var/snap/lighthouse/common/
+    sudo cp /mnt/reth/datadir/jwt.hex /var/snap/lighthouse/common/
 
 Start lighthouse:
 
