@@ -9,7 +9,7 @@ DATADIR_PATH="$SNAP_COMMON/datadir"
 
 write_service_args_file()
 {
-    service_args="$(get_service_args) --datadir=$DATADIR_PATH"
+    service_args="$(get_service_args)"
     log "Writing \"$service_args\" to $SERVICE_ARGS_FILE"
     echo "$service_args" > "$SERVICE_ARGS_FILE"
 }
@@ -50,11 +50,16 @@ service_args_has_changed()
 }
 
 #
-# Decsription: Checks that the service-args handles --datadir OK.
+# Description: Checks that the service-args handles --datadir <path>.
+#              It only allows those paths accepted by removable-media interface
+#              or the default snap directory $SNAP_COMMON/datadir
 #
+# Argument(s): A single string containing the service-args argument.
 validate_service_args()
 {
-
+    log "Validating service-args argument: $@"
+    
+    # These paths are allowed.
     allowed_removable_media_paths="/mnt /media /run/media $SNAP_COMMON/datadir"
 
     is_allowed_path() {
@@ -68,15 +73,13 @@ validate_service_args()
                     ;;
             esac
         done
-        log "--datadir $path NOT allowed."
+        log "--datadir $path is NOT allowed. Use any of these: $allowed_removable_media_paths (Hint: sudo snap connect reth:removable-media)"
         # Echo also messages the user.
-        echo "--datadir $path is NOT allowed. Use any of these: $allowed_removable_media_paths"
+        echo "--datadir $path is NOT allowed. Use any of these: $allowed_removable_media_paths (Hint: sudo snap connect reth:removable-media)"
         return 1
     }
-
-    log "Validating service-args argument: $@"
     
-    # Split the service args up into separate components which sets $# to the number of tokens.
+    # Split the function argument up into separate components which sets $# to the number of tokens.
     set -- $@
 
     # Iterate over the arguments to find --datadir and its value
@@ -91,7 +94,7 @@ validate_service_args()
                 fi
                 if ! is_allowed_path "$1"; then
                     set_service_args "$(get_previous_service_args)"
-                    log  "datadir is not allowed to pass as a service argument. Only paths directly within or under /mnt, /media, or /run/media are allowed. No change was made to servie-args."
+                    log  "--datadir $1 is not allowed. Only snap default or those allowed by removable-media is allowed. No change was made to servie-args."
                     exit 1
                 fi
                 ;;
