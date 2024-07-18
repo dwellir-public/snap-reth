@@ -42,9 +42,12 @@ Check and change the configuration of reth and/or lighthouse to your liking:
     snap get lighthouse
     snap get reth
 
-Change the location of the --datadir and allow the snap to access some external filsystems/dirs (see: snap interface removable-media)
+Connect the snap removable-media interface. This allows the snap to access external filsystems/dirs (see: snap interface removable-media)
 
     sudo snap connect reth:removable-media
+
+Configure your startup parameters (written to /var/snap/reth/common/service-arguments). Hint: remove '--full' to run as an archive node.
+
     sudo snap set reth service-args='node --full --datadir /mnt/reth/datadir'
 
 Start reth.
