@@ -58,6 +58,18 @@ Copy the jwt.hex from where you set the reth --datadir -> lighthouse
 
     sudo cp /mnt/reth/datadir/jwt.hex /var/snap/lighthouse/common/
 
+You might come across this error in the reth logs
+
+    Invalid JWT: provided signature is invalid
+
+Delete the previous jwt.hex file and generate a new one
+
+    sudo openssl rand -hex 32 > /mnt/reth/datadir/jwt.hex
+
+Pass the path to this file in the service-args
+
+    sudo snap set reth service-args='node --datadir /mnt/reth/datadir --metrics=0.0.0.0:9001 --authrpc.jwtsecret /mnt/reth/datadir/jwtsecret'
+
 Start lighthouse:
 
     sudo snap start lighthouse
@@ -82,3 +94,8 @@ Stop the reth-daemon:
 Prune:
   
     sudo reth prune --chain mainnet
+
+## Syncing with snapshot
+
+Download snapshot from https://snapshots.merkle.io/
+Follow steps in the site and make sure the snapshot which are `db` and `static_files` are in `mnt/reth/datadir`
