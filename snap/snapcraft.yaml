@@ -33,7 +33,7 @@ parts:
   reth:
     plugin: rust
     source: https://github.com/paradigmxyz/reth.git
-    source-tag: v1.0.4
+    source-tag: v1.0.5
     source-depth: 1
     build-packages:
       - build-essential
@@ -44,7 +44,7 @@ parts:
     # Make the commit hash available for snap info
     override-pull: |
       craftctl default
-      craftctl set version="1.0.4-$(git rev-parse --short HEAD)"
+      craftctl set version="1.0.5-$(git rev-parse --short HEAD)"
       rustup default stable
       rustup update
      
