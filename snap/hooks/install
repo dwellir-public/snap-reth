@@ -1,0 +1,15 @@
+#!/bin/sh
+
+. "$SNAP/utils/utils.sh"
+
+set -e
+log "Initializing default reth snap configuration."
+DATADIR_PATH="$SNAP_COMMON/datadir"
+DEFAULT_SERVICE_ARGS="node --full --datadir $DATADIR_PATH --chain mainnet"
+
+# Set snap Defaults
+snapctl set service-args="$DEFAULT_SERVICE_ARGS"
+log "Setting default service-args: $DEFAULT_SERVICE_ARGS"
+# TODO: Find a way to restart the service despite the snapcraft.yaml endure setting.
+snapctl set endure=true
+log "Setting default endure: true"
