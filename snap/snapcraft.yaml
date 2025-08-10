@@ -33,7 +33,7 @@ parts:
   reth:
     plugin: rust
     source: https://github.com/paradigmxyz/reth.git
-    source-tag: v1.3.12
+    source-tag: v1.6.0
     source-depth: 1
     build-packages:
       - build-essential
@@ -46,7 +46,7 @@ parts:
       rustup install stable
       rustup default stable
       craftctl default
-      craftctl set version="1.3.12-$(git rev-parse --short HEAD)"
+      craftctl set version="1.6.0-$(git rev-parse --short HEAD)"
     override-build: |
       # craftctl default 
       # This will place the reth binary under target/maxperf/reth
@@ -81,12 +81,13 @@ apps:
     daemon: simple
     install-mode: disable
     refresh-mode: endure
-    restart-condition: never
+    restart-condition: on-failure
     plugs:
       - network
       - network-bind
       - system-observe 
       - removable-media
+      - hardware-observe
     environment:
       LC_ALL: C.UTF-8
       LANG: C.UTF-8
