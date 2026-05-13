@@ -92,4 +92,4 @@ apps:
       LC_ALL: C.UTF-8
       LANG: C.UTF-8
   reth:
-    command: bin/reth
+    command: wrappers/run-reth-cli.bash

@@ -85,6 +85,11 @@ Check logs:
 ## Query database (using the reth cli)
     sudo reth db stats
 
+If the snap reports that the resolved datadir does not exist, start the
+`reth` daemon once to initialize the default snap datadir, or configure
+`snap set reth service-args='... --datadir <path>'` and create that datadir
+before running CLI database commands.
+
 ## Pruning
 
 Stop the reth-daemon:

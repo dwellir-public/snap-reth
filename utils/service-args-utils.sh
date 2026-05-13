@@ -34,6 +34,84 @@ get_service_args()
     echo "$service_args"
 }
 
+cli_args_have_datadir()
+{
+    while [ "$#" -gt 0 ]; do
+        case "$1" in
+            --datadir|--datadir=*)
+                return 0
+                ;;
+        esac
+        shift
+    done
+    return 1
+}
+
+extract_datadir_from_args_string()
+{
+    # shellcheck disable=SC2086
+    set -- $1
+
+    while [ "$#" -gt 0 ]; do
+        case "$1" in
+            --datadir)
+                shift
+                [ "$#" -gt 0 ] || return 1
+                printf '%s\n' "$1"
+                return 0
+                ;;
+            --datadir=*)
+                printf '%s\n' "${1#--datadir=}"
+                return 0
+                ;;
+        esac
+        shift
+    done
+    return 1
+}
+
+resolve_cli_datadir()
+{
+    if [ -f "$SERVICE_ARGS_FILE" ]; then
+        service_args="$(cat "$SERVICE_ARGS_FILE")"
+        if [ -n "$service_args" ]; then
+            if datadir="$(extract_datadir_from_args_string "$service_args")"; then
+                printf '%s\n' "$datadir"
+                return 0
+            fi
+        fi
+    fi
+
+    printf '%s\n' "$DATADIR_PATH"
+}
+
+command_accepts_datadir()
+{
+    while [ "$#" -gt 0 ]; do
+        case "$1" in
+            --)
+                shift
+                break
+                ;;
+            -*)
+                shift
+                ;;
+            *)
+                case "$1" in
+                    node|init|init-state|import|import-era|export-era|db|download|stage|p2p|prune|re-execute)
+                        return 0
+                        ;;
+                    *)
+                        return 1
+                        ;;
+                esac
+                ;;
+        esac
+    done
+
+    return 1
+}
+
 set_previous_service_args()
 {
     snapctl set private.service-args="$1"
